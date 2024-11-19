@@ -1,26 +1,45 @@
 import { Injectable } from '@nestjs/common';
-import { CreateListingDto } from './dto/create-listing.dto';
-import { UpdateListingDto } from './dto/update-listing.dto';
+import { Listing } from './entities/listing.entity';
 
 @Injectable()
 export class ListingsService {
-  create(createListingDto: CreateListingDto) {
-    return 'This action adds a new listing';
+  private listings: Listing[] = [];
+  private idCounter = 1;
+
+  create(createDto: Listing): Listing {
+    const newListing: Listing = {
+      id: this.idCounter++,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      ...createDto,
+    };
+    this.listings.push(newListing);
+    return newListing;
   }
 
-  findAll() {
-    return `This action returns all listings`;
+  findAll(): Listing[] {
+    return this.listings;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} listing`;
+  findOne(id: number): Listing | undefined {
+    return this.listings.find((listing) => listing.id === id);
   }
 
-  update(id: number, updateListingDto: UpdateListingDto) {
-    return `This action updates a #${id} listing`;
+  update(id: number, updatedData: Listing): Listing | undefined {
+    const index = this.listings.findIndex((listing) => listing.id === id);
+    if (index === -1) return undefined;
+    this.listings[index] = {
+      ...this.listings[index],
+      ...updatedData,
+      updatedAt: new Date(),
+    };
+    return this.listings[index];
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} listing`;
+  remove(id: number): boolean {
+    const index = this.listings.findIndex((listing) => listing.id === id);
+    if (index === -1) return false;
+    this.listings.splice(index, 1);
+    return true;
   }
 }
