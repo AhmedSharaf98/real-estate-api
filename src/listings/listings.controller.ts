@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ListingsService } from './listings.service';
-import { CreateListingDto } from './dto/create-listing.dto';
-import { UpdateListingDto } from './dto/update-listing.dto';
+import { Listing } from './entities/listing.entity';
 
 @Controller('listings')
 export class ListingsController {
   constructor(private readonly listingsService: ListingsService) {}
 
   @Post()
-  create(@Body() createListingDto: CreateListingDto) {
-    return this.listingsService.create(createListingDto);
+  create(@Body() createDto: Partial<Listing>): Listing {
+    return this.listingsService.create(createDto as Listing);
   }
 
   @Get()
-  findAll() {
+  findAll(): Listing[] {
     return this.listingsService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Listing | undefined {
     return this.listingsService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateListingDto: UpdateListingDto) {
-    return this.listingsService.update(+id, updateListingDto);
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateDto: Partial<Listing>): Listing | undefined {
+    return this.listingsService.update(+id, updateDto as Listing);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): boolean {
     return this.listingsService.remove(+id);
   }
 }
