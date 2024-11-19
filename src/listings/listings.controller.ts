@@ -1,13 +1,15 @@
 import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
 import { ListingsService } from './listings.service';
 import { Listing } from './entities/listing.entity';
+import { CreateListingDto } from './dto/create-listing.dto';
+import { UpdateListingDto } from './dto/update-listing.dto';
 
 @Controller('listings')
 export class ListingsController {
   constructor(private readonly listingsService: ListingsService) {}
 
   @Post()
-  create(@Body() createDto: Partial<Listing>): Listing {
+  create(@Body() createDto: CreateListingDto): Listing {
     return this.listingsService.create(createDto as Listing);
   }
 
@@ -22,7 +24,7 @@ export class ListingsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateDto: Partial<Listing>): Listing | undefined {
+  update(@Param('id') id: string, @Body() updateDto: UpdateListingDto): Listing | undefined {
     return this.listingsService.update(+id, updateDto as Listing);
   }
 
